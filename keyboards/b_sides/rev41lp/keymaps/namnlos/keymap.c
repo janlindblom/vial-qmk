@@ -18,12 +18,7 @@
 #include "keymap_swedish.h"
 #include "sendstring_swedish.h"
 
-enum layer_names {
-    _BASE,
-    _LOWER,
-    _RAISE,
-    _ADJUST
-};
+enum layer_names { _BASE, _LOWER, _RAISE, _ADJUST };
 
 enum custom_keycodes {
     SK_NOT_EQL = SAFE_RANGE,
@@ -53,73 +48,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
-// Combos, if enabled
-#ifdef COMBO_ENABLE
-enum combo_events {
-    ZC_COPY,
-    XV_PASTE,
-    ZX_CUT,
-};
-
-const uint16_t PROGMEM copy_combo[]  = {KC_Z, KC_C, COMBO_END};
-const uint16_t PROGMEM paste_combo[] = {KC_X, KC_V, COMBO_END};
-const uint16_t PROGMEM cut_combo[]   = {KC_Z, KC_X, COMBO_END};
-
-combo_t key_combos[COMBO_COUNT] = {
-    [ZC_COPY]  = COMBO_ACTION(copy_combo),
-    [XV_PASTE] = COMBO_ACTION(paste_combo),
-    [ZX_CUT]   = COMBO_ACTION(cut_combo),
-};
-
-void process_combo_event(uint16_t combo_index, bool pressed) {
-    switch (combo_index) {
-        case ZC_COPY:
-            if (pressed) {
-                tap_code16(LCTL(KC_C));
-            }
-            break;
-        case XV_PASTE:
-            if (pressed) {
-                tap_code16(LCTL(KC_V));
-            }
-            break;
-        case ZX_CUT:
-            if (pressed) {
-                tap_code16(LCTL(KC_X));
-            }
-            break;
-    }
-}
-#endif
-
-// Tap Dance definitions
-#ifdef TAP_DANCE_ENABLE
-enum dances {
-    TD_SHFT_CAPS,
-    TD_DOT_COL,
-    TD_COM_SCL,
-    TD_DASH_USCR,
-};
-
-qk_tap_dance_action_t tap_dance_actions[] = {
-    // Tap once for Shift, twice for Caps Lock
-    [TD_SHFT_CAPS] = ACTION_TAP_DANCE_DOUBLE(KC_LSFT, KC_CAPS),
-    [TD_COM_SCL]   = ACTION_TAP_DANCE_DOUBLE(KC_COMM, SE_SCLN),
-    [TD_DOT_COL]   = ACTION_TAP_DANCE_DOUBLE(KC_DOT, SE_COLN),
-    [TD_DASH_USCR] = ACTION_TAP_DANCE_DOUBLE(SE_MINS, S(SE_MINS)),
-};
-#    define CK_LSFT TD(TD_SHFT_CAPS)
-#    define CK_COMM TD(TD_COM_SCL)
-#    define CK_DOT TD(TD_DOT_COL)
-#    define CK_DASH TD(TD_DASH_USCR)
-#else
-#    define CK_LSFT KC_LSFT
-#    define CK_COMM KC_COMM
-#    define CK_DOT KC_DOT
-#    define CK_DASH SE_MINS
-#endif
-
 // Some defines for the keys below
+#define CK_COMM KC_COMM
+#define CK_DOT KC_DOT
+#define CK_DASH SE_MINS
+#define CK_LSFT KC_LSFT
 #define CK_ESC LT(_RAISE, KC_ESC)
 #define CK_BSPC LCTL_T(KC_BSPC)
 #define CK_DEL LALT_T(KC_DEL)
@@ -130,17 +63,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 #define CK_QUOT RSFT_T(SE_QUOT)
 #define CK_SPC RSFT_T(KC_SPC)
 
-// Alt + [-] => – (en-dash)
-const key_override_t mins_ndash_override = ko_make_basic(MOD_MASK_ALT, SE_MINS, UC(0x2013));
- // Shift + Alt + [-] => — (em-dash)
-const key_override_t mins_mdash_override = ko_make_basic(MOD_MASK_SA, SE_MINS, UC(0x2014));
-
-const key_override_t **key_overrides = (const key_override_t *[]){
-    &mins_ndash_override,
-    &mins_mdash_override,
-    NULL
-};
-
+// clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_BASE] = LAYOUT_rev41lp(
     CK_ESC,   KC_Q,     KC_W,     KC_E,     KC_R,      KC_T,               KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,  SE_ARNG,
@@ -170,6 +93,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                _______, _______, _______,  _______,  _______
   )
 };
+// clang-format on
 
 layer_state_t layer_state_set_user(layer_state_t state) {
     return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
