@@ -3,4 +3,13 @@
 
 #pragma once
 
-#define VIAL_KEYBOARD_UID {0x48, 0x91, 0xE2, 0x16, 0xEA, 0x16, 0x46, 0x27}
+#define VIAL_KEYBOARD_UID \
+    { 0x48, 0x91, 0xE2, 0x16, 0xEA, 0x16, 0x46, 0x27 }
+
+#if defined(ADAFRUIT_KB2040) || defined(CONVERT_TO_KB2040)
+#    ifndef RGBLIGHT_ENABLE
+#        define RGBLIGHT_ENABLE
+#    endif
+#    define RGB_DI_PIN 17U
+#    define RGBLED_NUM 1
+#endif
